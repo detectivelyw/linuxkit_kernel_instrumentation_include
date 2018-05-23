@@ -1,7 +1,7 @@
-// extern int kernel_init_done; 
-// #include <linux/linkage.h> 
-// asmlinkage __printf(1, 2) __cold 
-// int printk(const char *fmt, ...); 
+extern int kernel_init_done; 
+#include <linux/linkage.h> 
+asmlinkage __printf(1, 2) __cold 
+int printk(const char *fmt, ...); 
 #ifndef _LINUX_MEMREMAP_H_
 #define _LINUX_MEMREMAP_H_
 #include <linux/mm.h>
@@ -27,15 +27,12 @@ struct vmem_altmap {
 	unsigned long alloc;
 };
 
-unsigned long vmem_altmap_offset(struct vmem_altmap *altmap);
-void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns);
-
 #ifdef CONFIG_ZONE_DEVICE
 struct vmem_altmap *to_vmem_altmap(unsigned long memmap_start);
 #else
 static inline struct vmem_altmap *to_vmem_altmap(unsigned long memmap_start)
 {
-	// if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 38 \n"); 
+	if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 38 \n"); 
 	return NULL;
 }
 #endif
@@ -58,12 +55,14 @@ struct dev_pagemap {
 void *devm_memremap_pages(struct device *dev, struct resource *res,
 		struct percpu_ref *ref, struct vmem_altmap *altmap);
 struct dev_pagemap *find_dev_pagemap(resource_size_t phys);
+unsigned long vmem_altmap_offset(struct vmem_altmap *altmap);
+void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns);
 #else
 static inline void *devm_memremap_pages(struct device *dev,
 		struct resource *res, struct percpu_ref *ref,
 		struct vmem_altmap *altmap)
 {
-	// if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 66 \n"); 
+	if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 66 \n"); 
 	/*
 	 * Fail attempts to call devm_memremap_pages() without
 	 * ZONE_DEVICE support enabled, this requires callers to fall
@@ -75,8 +74,17 @@ static inline void *devm_memremap_pages(struct device *dev,
 
 static inline struct dev_pagemap *find_dev_pagemap(resource_size_t phys)
 {
-	// if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 78 \n"); 
+	if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 78 \n"); 
 	return NULL;
+}
+
+static inline unsigned long vmem_altmap_offset(struct vmem_altmap *altmap)
+{
+	return 0;
+}
+
+static inline void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns)
+{
 }
 #endif
 
@@ -91,7 +99,7 @@ static inline struct dev_pagemap *find_dev_pagemap(resource_size_t phys)
 static inline struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
 		struct dev_pagemap *pgmap)
 {
-	// if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 94 \n"); 
+	if (kernel_init_done == 1) printk("We reached unpopular paths in include/linux/memremap.h: line 94 \n"); 
 	const struct resource *res = pgmap ? pgmap->res : NULL;
 	resource_size_t phys = PFN_PHYS(pfn);
 
